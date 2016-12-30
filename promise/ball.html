@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ball animation</title>
+    <style>
+        .ball{
+            width:40px;
+            height: 40px;
+            border-radius: 20px;
+            border: solid;
+        }
+        .ball1{
+            background-color: red;
+        }
+        .ball2{
+            background-color: yellow;
+        }
+        .ball3{
+            background-color: blue;
+        }
+    </style>
+    <script src="./node_modules/bluebird/js/browser/bluebird.js"></script>
+
+
+</head>
+<body>
+<div class="ball ball1" style="margin-left: 0"></div>
+<div class="ball ball2" style="margin-left: 0"></div>
+<div class="ball ball3" style="margin-left: 0"></div>
+</body>
+<script>
+        var ballObj1 = document.querySelector(".ball1");
+        var ballObj2 = document.querySelector(".ball2");
+        var ballObj3 = document.querySelector(".ball3");
+
+        function animation(object, distance, callback) {
+            setTimeout(function () {
+
+                var mainginLeft = parseInt(object.style.marginLeft, 10);
+                console.log(mainginLeft);
+                if (mainginLeft == distance) {
+                    callback && callback();
+                } else {
+                    if (mainginLeft < distance) {
+                        mainginLeft++;
+                    }
+                    else {
+                        mainginLeft--;
+                    }
+                    object.style.marginLeft = mainginLeft + "px";
+                    animation(object, distance, callback);
+                }
+
+            }, 13);
+
+        }
+
+      /*  animation(ballObj1, 100, function () {
+            animation(ballObj2, 200, function () {
+                animation(ballObj3, 300, function () {
+                    animation(ballObj1, 150, function () {
+                        animation(ballObj2, 150, function () {
+                            animation(ballObj3, 150, function () {
+                                //
+                            })
+                        })
+                    })
+                })
+            })
+        });*/
+      var Promise=window.Promise
+    function promiseAnimate(object,distance) {
+          return new Promise(function (resolve,reject) {
+              function _animation() {
+                  setTimeout(function () {
+                      var mainginLeft = parseInt(object.style.marginLeft, 10);
+                      console.log(mainginLeft);
+                      if (mainginLeft == distance) {
+                          resolve()
+                      } else {
+                          if (mainginLeft < distance) {
+                              mainginLeft++;
+                          }
+                          else {
+                              mainginLeft--;
+                          }
+                          object.style.marginLeft = mainginLeft + "px";
+                          _animation();
+                      }
+
+                  }, 13);
+              }
+              _animation()
+          })
+    }
+    promiseAnimate(ballObj1,100)
+        .then(function () {
+            return promiseAnimate(ballObj2,200)
+        })
+        .then(function () {
+            return promiseAnimate(ballObj3,300)
+        })
+        .then(function () {
+            return promiseAnimate(ballObj3,150)
+        })
+        .then(function () {
+            return promiseAnimate(ballObj2,150)
+        })
+        .then(function () {
+            return promiseAnimate(ballObj1,150)
+        })
+</script>
+</html>
